@@ -58,7 +58,7 @@ public class ConcurrentHashMapAccountStorage implements AccountStorage {
     }
 
     private void validateVersion(Account currentAccountValue, Account newAccountValue) throws AccountStorageException {
-        if (currentAccountValue.getVersion().get() > newAccountValue.getVersion().get()) {
+        if (currentAccountValue.getVersion().getAcquire() > newAccountValue.getVersion().getAcquire()) {
             throw new AccountStorageException("Account has been updated by another process");
         }
     }

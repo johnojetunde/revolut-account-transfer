@@ -32,7 +32,7 @@ class DefaultAccountServiceTest {
             assertEquals("664664", account.getId());
             assertEquals("johndoe", account.getFirstname());
             assertEquals("revolut", account.getLastname());
-            assertEquals(20, account.getVersion().get());
+            assertEquals(20, account.getVersion().getAcquire());
         } catch (Exception e) {
             fail();
         }
@@ -102,6 +102,7 @@ class DefaultAccountServiceTest {
             assertEquals("johndoe", updatedAccount.getFirstname());
             assertEquals("revolut", updatedAccount.getLastname());
         } catch (Exception e) {
+            System.out.println(e);
             fail();
         }
     }

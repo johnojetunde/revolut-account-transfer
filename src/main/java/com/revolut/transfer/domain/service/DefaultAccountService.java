@@ -6,12 +6,15 @@ import com.revolut.transfer.domain.model.Account;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.revolut.transfer.domain.util.StringUtils.isNullOrEmpty;
+import static java.math.BigDecimal.ZERO;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 @AllArgsConstructor
@@ -19,12 +22,12 @@ public class DefaultAccountService implements AccountService {
     private AccountStorage accountStorage;
 
     @Override
-    public CompletableFuture<Account> create(@NonNull String firstName, @NonNull String lastName, @NonNull float balance) throws AccountServiceException {
+    public CompletableFuture<Account> create(@NonNull String firstName, @NonNull String lastName, @NonNull BigDecimal balance) throws AccountServiceException {
         try {
             Account account = Account.builder()
                     .firstname(firstName)
                     .lastname(lastName)
-                    .balance(balance)
+                    .balance(new AtomicReference<>(balance))
                     .version(new AtomicInteger(0))
                     .build();
             return completedFuture(accountStorage.create(account));
@@ -83,8 +86,8 @@ public class DefaultAccountService implements AccountService {
     }
 
     private void updateBalance(Account currentAccount, Account updates) {
-        if (currentAccount.getBalance() != 0.0F
-                && updates.getBalance() != currentAccount.getBalance()) {
+        if (!ZERO.equals(currentAccount.getBalance().getAcquire())
+                && !currentAccount.getBalance().equals(updates.getBalance())) {
             currentAccount.setBalance(updates.getBalance());
         }
     }

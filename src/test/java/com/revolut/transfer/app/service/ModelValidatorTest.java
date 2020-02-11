@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.Validator;
+import java.math.BigDecimal;
 
 import static com.revolut.transfer.app.fixture.AccountRequestModelFixture.requestModelFixture;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,7 +25,7 @@ class ModelValidatorTest {
     @Test
     void shouldValidateSuccessfullyWithErrors() {
         AccountRequestModel model = requestModelFixture(false);
-        model.setBalance(-1F);
+        model.setBalance(new BigDecimal("-1"));
         try {
             modelValidator.validate(model);
             fail();

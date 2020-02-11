@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import spark.Spark;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import static com.revolut.transfer.app.fixture.AccountRequestModelFixture.requestModelFixture;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -139,7 +140,7 @@ public class AccountAPITests {
         Response createResponse = createAccount(accountJson);
         AccountResponseModel responseModel = gson.fromJson(createResponse.body().charStream(), AccountResponseModel.class);
 
-        requestModel.setBalance(500.0F);
+        requestModel.setBalance(new BigDecimal("500.0"));
         requestModel.setFirstname("Ginger");
 
         Request request = new Request.Builder()
@@ -156,7 +157,7 @@ public class AccountAPITests {
                 () -> assertEquals(200, response.code()),
                 () -> assertEquals("application/json", response.header("Content-Type")),
                 () -> assertNotNull(response.body()),
-                () -> assertEquals(500.0F, updatedModel.getBalance()),
+                () -> assertEquals(500.0, updatedModel.getBalance().doubleValue()),
                 () -> assertEquals("Ginger", updatedModel.getFirstname())
         );
     }

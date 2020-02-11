@@ -6,9 +6,11 @@ import com.revolut.transfer.domain.model.AccountFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static com.revolut.transfer.domain.model.AccountFixture.getAccount;
@@ -40,7 +42,7 @@ class ConcurrentHashMapAccountStorageTest {
         assertNotNull(account);
         assertNotEquals("664664", account.getId());
         assertEquals(9, account.getId().length());
-        assertEquals(0, account.getVersion().get());
+        assertEquals(0, account.getVersion().getAcquire());
     }
 
     @Test
@@ -73,17 +75,17 @@ class ConcurrentHashMapAccountStorageTest {
 
     @Test
     void updateAccountSuccessfully() throws AccountStorageException {
-        float balance = 50.00F;
+        BigDecimal balance = new BigDecimal("50.0");
         Account account = storage.create(getAccount("John", "Doe"));
 
-        Integer versionBefore = account.getVersion().get();
-        account.setBalance(balance);
+        Integer versionBefore = account.getVersion().getAcquire();
+        account.setBalance(new AtomicReference<>(balance));
 
         Account updatedAccount = storage.update(account);
-        Integer versionAfter = updatedAccount.getVersion().get();
+        Integer versionAfter = updatedAccount.getVersion().getAcquire();
 
         assertNotEquals(versionBefore, versionAfter);
-        assertEquals(50.00F, updatedAccount.getBalance());
+        assertEquals(50.0, updatedAccount.getBalance().getAcquire().doubleValue());
     }
 
     @Test
