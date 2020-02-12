@@ -2,7 +2,6 @@ package com.revolut.transfer.domain.service;
 
 import com.revolut.transfer.domain.exception.AccountServiceException;
 import com.revolut.transfer.domain.model.Account;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import static com.revolut.transfer.domain.model.AccountFixture.getAccount;
 import static com.revolut.transfer.domain.stubs.AccountStorageStub.accountStorageWithErrors;
 import static com.revolut.transfer.domain.stubs.AccountStorageStub.validAccountStorage;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultAccountServiceTest {
     private DefaultAccountService accountService;
@@ -29,10 +27,11 @@ class DefaultAccountServiceTest {
             CompletableFuture<Account> result = accountService.create("Jayeola", "Ginger");
             Account account = result.get();
 
-            assertEquals("664664", account.getId());
-            assertEquals("johndoe", account.getFirstname());
-            assertEquals("revolut", account.getLastname());
-            assertEquals(20, account.getVersion().getAcquire());
+            assertAll("verying values",
+                    () -> assertEquals("664664", account.getId()),
+                    () -> assertEquals("johndoe", account.getFirstname()),
+                    () -> assertEquals("revolut", account.getLastname()),
+                    () -> assertEquals(20, account.getVersion().getAcquire()));
         } catch (Exception e) {
             fail();
         }
@@ -42,8 +41,7 @@ class DefaultAccountServiceTest {
     void exceptionWhenCreatingAccount() {
         accountService = new DefaultAccountService(accountStorageWithErrors());
 
-        Assertions.assertThrows(AccountServiceException.class,
-                () -> accountService.create("Jayeola", "Ginger"));
+        assertThrows(AccountServiceException.class, () -> accountService.create("Jayeola", "Ginger"));
     }
 
     @Test
@@ -52,9 +50,10 @@ class DefaultAccountServiceTest {
             CompletableFuture<Account> result = accountService.get("0001");
             Account account = result.get();
 
-            assertEquals("0001", account.getId());
-            assertEquals("johndoe", account.getFirstname());
-            assertEquals("revolut", account.getLastname());
+            assertAll("verying values",
+                    () -> assertEquals("0001", account.getId()),
+                    () -> assertEquals("johndoe", account.getFirstname()),
+                    () -> assertEquals("revolut", account.getLastname()));
         } catch (Exception e) {
             fail();
         }
@@ -63,8 +62,7 @@ class DefaultAccountServiceTest {
     @Test
     void exceptionWhenGettingAccount() {
         accountService = new DefaultAccountService(accountStorageWithErrors());
-        Assertions.assertThrows(AccountServiceException.class,
-                () -> accountService.get("122323"), "");
+        assertThrows(AccountServiceException.class, () -> accountService.get("122323"), "");
     }
 
     @Test
@@ -73,10 +71,11 @@ class DefaultAccountServiceTest {
             CompletableFuture<List<Account>> result = accountService.getAll();
             List<Account> accounts = result.get();
 
-            assertEquals(1, accounts.size());
-            assertEquals("664664", accounts.get(0).getId());
-            assertEquals("johndoe", accounts.get(0).getFirstname());
-            assertEquals("revolut", accounts.get(0).getLastname());
+            assertAll("verying values",
+                    () -> assertEquals(1, accounts.size()),
+                    () -> assertEquals("664664", accounts.get(0).getId()),
+                    () -> assertEquals("johndoe", accounts.get(0).getFirstname()),
+                    () -> assertEquals("revolut", accounts.get(0).getLastname()));
         } catch (Exception e) {
             fail();
         }
@@ -85,8 +84,7 @@ class DefaultAccountServiceTest {
     @Test
     void exceptionWhenGettingAllAccounts() {
         accountService = new DefaultAccountService(accountStorageWithErrors());
-        Assertions.assertThrows(AccountServiceException.class,
-                () -> accountService.getAll(), "");
+        assertThrows(AccountServiceException.class, () -> accountService.getAll(), "");
     }
 
     @Test
@@ -98,11 +96,11 @@ class DefaultAccountServiceTest {
             CompletableFuture<Account> result = accountService.update(account.getId(), account);
             Account updatedAccount = result.get();
 
-            assertEquals("664664", updatedAccount.getId());
-            assertEquals("johndoe", updatedAccount.getFirstname());
-            assertEquals("revolut", updatedAccount.getLastname());
+            assertAll("verifying data",
+                    () -> assertEquals("664664", updatedAccount.getId()),
+                    () -> assertEquals("johndoe", updatedAccount.getFirstname()),
+                    () -> assertEquals("revolut", updatedAccount.getLastname()));
         } catch (Exception e) {
-            System.out.println(e);
             fail();
         }
     }
@@ -110,7 +108,7 @@ class DefaultAccountServiceTest {
     @Test
     void exceptionWhenUpdatingAccounts() {
         accountService = new DefaultAccountService(accountStorageWithErrors());
-        Assertions.assertThrows(AccountServiceException.class,
+        assertThrows(AccountServiceException.class,
                 () -> accountService.update("1234", getAccount("John", "Dami")), "");
     }
 }

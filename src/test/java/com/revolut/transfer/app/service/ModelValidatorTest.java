@@ -24,7 +24,7 @@ class ModelValidatorTest {
 
     @Test
     void shouldValidateSuccessfullyWithErrors() {
-        AccountRequestModel model = requestModelFixture(false);
+        var model = requestModelFixture(false);
         model.setBalance(new BigDecimal("-1"));
         try {
             modelValidator.validate(model);
@@ -38,7 +38,6 @@ class ModelValidatorTest {
 
     @Test
     void shouldValidateSuccessfullyWithoutErrors() throws ViolationException {
-        AccountRequestModel model = requestModelFixture(true);
-        modelValidator.validate(model);
+        modelValidator.validate(requestModelFixture(true));
     }
 }

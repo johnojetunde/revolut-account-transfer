@@ -35,10 +35,11 @@ class ConcurrentHashMapTransferStorageTest {
     void createTransferSuccessfully() throws TransferStorageException {
         Transfer transfer = storage.create(getTransfer("John", "Doe"));
 
-        assertNotNull(transfer);
-        assertNotEquals("id", transfer.getId());
-        assertEquals("John", transfer.getSenderAccountId());
-        assertEquals("Doe", transfer.getReceiverAccountId());
+        assertAll("verifying balance",
+                () -> assertNotNull(transfer),
+                () -> assertNotEquals("id", transfer.getId()),
+                () -> assertEquals("John", transfer.getSenderAccountId()),
+                () -> assertEquals("Doe", transfer.getReceiverAccountId()));
     }
 
     @Test

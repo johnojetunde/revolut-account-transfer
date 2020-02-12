@@ -40,9 +40,10 @@ class DefaultTransferServiceTest {
             Account sender = accountService.get(result.sender.getId()).get();
             Account receiver = accountService.get(result.receiver.getId()).get();
 
-            assertNotNull(transfer);
-            assertEquals(80.0, sender.getBalance().getAcquire().doubleValue());
-            assertEquals(50.0, receiver.getBalance().getAcquire().doubleValue());
+            assertAll("verifying balance",
+                    () -> assertNotNull(transfer),
+                    () -> assertEquals(80.0, sender.getBalance().getAcquire().doubleValue()),
+                    () -> assertEquals(50.0, receiver.getBalance().getAcquire().doubleValue()));
         } catch (Exception e) {
             fail();
         }
@@ -88,9 +89,10 @@ class DefaultTransferServiceTest {
             transferService.transfer(transfer);
             List<Transfer> result = transferService.getAll().get();
 
-            assertNotNull(result);
-            assertEquals(2, result.size());
-            assertEquals(20.0, result.get(0).getAmount().doubleValue());
+            assertAll("verifying balance",
+                    () -> assertNotNull(result),
+                    () -> assertEquals(2, result.size()),
+                    () -> assertEquals(20.0, result.get(0).getAmount().doubleValue()));
         } catch (Exception e) {
             fail();
         }

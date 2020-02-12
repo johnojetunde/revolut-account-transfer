@@ -39,10 +39,11 @@ class ConcurrentHashMapAccountStorageTest {
     void createAccountSuccessfully() throws AccountStorageException {
         Account account = storage.create(getAccount("John", "Doe"));
 
-        assertNotNull(account);
-        assertNotEquals("664664", account.getId());
-        assertTrue(account.getId().contains("REV"));
-        assertEquals(0, account.getVersion().getAcquire());
+        assertAll("verifying balance",
+                () -> assertNotNull(account),
+                () -> assertNotEquals("664664", account.getId()),
+                () -> assertTrue(account.getId().contains("REV")),
+                () -> assertEquals(0, account.getVersion().getAcquire()));
     }
 
     @Test

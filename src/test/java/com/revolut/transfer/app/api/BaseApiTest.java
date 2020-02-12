@@ -1,6 +1,7 @@
 package com.revolut.transfer.app.api;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.revolut.transfer.app.RevolutTransfer;
 import okhttp3.*;
 import org.junit.jupiter.api.AfterAll;
@@ -8,12 +9,12 @@ import org.junit.jupiter.api.BeforeAll;
 import spark.Spark;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class BaseApiTest {
+public class BaseApiTest<T> {
     static String BASE_URL;
     static OkHttpClient client;
     static Gson gson;
@@ -21,7 +22,7 @@ public class BaseApiTest {
     @BeforeAll
     public static void startServer() {
         RevolutTransfer.main("");
-        int PORT = Spark.port();
+        var PORT = Spark.port();
         client = new OkHttpClient();
         BASE_URL = "http://localhost:" + PORT;
         gson = new Gson();
@@ -34,23 +35,38 @@ public class BaseApiTest {
     }
 
     Response createAccount(String accountJson) throws IOException {
-        Request request = new Request.Builder()
-                .url(BASE_URL + "/accounts")
-                .post(RequestBody.create(MediaType.get("application/json"), accountJson))
-                .build();
-
-        Call call = client.newCall(request);
-        return call.execute();
+        return httpPost("/accounts", accountJson);
     }
 
-    Response getAccountById(String id) throws IOException {
-        Request request = new Request.Builder()
-                .url(BASE_URL + "/accounts/" + id)
+    Response httpPost(String path, String body) throws IOException {
+        var request = new Request.Builder()
+                .url(BASE_URL + path)
+                .post(RequestBody.create(MediaType.get("application/json"), body))
+                .build();
+
+        return fireRequest(request);
+    }
+
+    Response httpPatch(String path, String body) throws IOException {
+        var request = new Request.Builder()
+                .url(BASE_URL + path)
+                .patch(RequestBody.create(MediaType.get("application/json"), body))
+                .build();
+
+        return fireRequest(request);
+    }
+
+    Response httpGet(String path) throws IOException {
+        var request = new Request.Builder()
+                .url(BASE_URL + path)
                 .get()
                 .build();
 
-        Call call = client.newCall(request);
-        return call.execute();
+        return fireRequest(request);
+    }
+
+    private Response fireRequest(Request request) throws IOException {
+        return client.newCall(request).execute();
     }
 
     void assertHttpResponse(Response response, int statusCode) {
@@ -59,5 +75,22 @@ public class BaseApiTest {
                 () -> assertEquals("application/json", response.header("Content-Type")),
                 () -> assertNotNull(response.body())
         );
+    }
+
+    void assertListOfObject(Response response) {
+        var type = new TypeToken<ArrayList<T>>() {}.getType();
+
+        List<T> responseObjects = gson.fromJson(response.body().charStream(), type);
+
+        assertHttpResponse(response, 200);
+        assertFalse(responseObjects.isEmpty());
+    }
+
+    T convertToModel(Response response) {
+        return (T) convertToObject(response);
+    }
+
+    Object convertToObject(Response response) {
+        return gson.fromJson(response.body().charStream(), Object.class);
     }
 }
