@@ -31,7 +31,7 @@ public class ConcurrentHashMapTransferStorage implements TransferStorage {
     }
 
     @Override
-    public Transfer get(String id) throws TransferStorageException {
+    public Transfer findById(String id) throws TransferStorageException {
         var transfer = database.get(id);
         if (transfer == null) {
             throw new TransferStorageException("Transfer record does not exist");
@@ -40,7 +40,7 @@ public class ConcurrentHashMapTransferStorage implements TransferStorage {
     }
 
     @Override
-    public List<Transfer> getAll() throws TransferStorageException {
+    public List<Transfer> findAll() throws TransferStorageException {
         return getAllAsList(database);
     }
 

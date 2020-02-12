@@ -12,7 +12,7 @@ public class BalanceTransferValidator implements TransferValidator {
         BigDecimal senderBalance = sender.getBalance().getAcquire();
 
         if (senderBalance.compareTo(transfer.getAmount()) < 0) {
-            throw new TransferValidationException("Inssuficient balance to make this transfer");
+            throw new TransferValidationException("Insufficient balance to make this transfer");
         }
     }
 }
