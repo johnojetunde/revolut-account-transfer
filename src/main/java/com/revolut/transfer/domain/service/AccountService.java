@@ -12,11 +12,11 @@ import static java.math.BigDecimal.ZERO;
 public interface AccountService {
     CompletableFuture<Account> create(String firstName, String lastName, BigDecimal balance) throws AccountServiceException;
 
-    CompletableFuture<Account> update(String id, Account account) throws AccountServiceException;
-
     default CompletableFuture<Account> create(String firstName, String lastName) throws AccountServiceException {
         return create(firstName, lastName, ZERO);
     }
+
+    CompletableFuture<Account> update(String id, Account account) throws AccountServiceException;
 
     CompletableFuture<Account> get(String id) throws AccountServiceException;
 
