@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.revolut.transfer.domain.util.FunctionUtils.isNullOrEmpty;
+import static com.revolut.transfer.domain.util.FunctionUtil.isNullOrEmpty;
 import static java.math.BigDecimal.ZERO;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 

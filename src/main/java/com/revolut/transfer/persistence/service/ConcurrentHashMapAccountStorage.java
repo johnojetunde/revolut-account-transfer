@@ -10,12 +10,13 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.revolut.transfer.domain.util.FunctionUtils.getAllAsList;
+import static com.revolut.transfer.domain.util.FunctionUtil.getAllAsList;
 import static java.lang.String.valueOf;
 
 @AllArgsConstructor
 public class ConcurrentHashMapAccountStorage implements AccountStorage {
     private static final String PREFIX = "REV";
+    private static final int ID_GEN_BOUND = 1000000000;
     private final ConcurrentHashMap<String, Account> database;
 
     @Override
@@ -31,6 +32,11 @@ public class ConcurrentHashMapAccountStorage implements AccountStorage {
         } catch (Exception e) {
             throw new AccountStorageException("Unable to create account");
         }
+    }
+
+    synchronized String generateId() {
+        Random random = new Random(System.nanoTime());
+        return PREFIX.concat(valueOf(random.nextInt(ID_GEN_BOUND)));
     }
 
     @Override
@@ -66,11 +72,6 @@ public class ConcurrentHashMapAccountStorage implements AccountStorage {
         AtomicInteger version = account.getVersion();
         version.getAndAdd(1);
         account.setVersion(version);
-
     }
 
-    synchronized String generateId() {
-        Random random = new Random(System.nanoTime());
-        return PREFIX.concat(valueOf(random.nextInt(1000000000)));
-    }
 }

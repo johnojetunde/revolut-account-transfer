@@ -22,6 +22,24 @@ public class DefaultTransferService implements TransferService {
     private List<TransferValidator> validators;
 
     @Override
+    public CompletableFuture<Transfer> get(String id) throws TransferServiceException {
+        try {
+            return completedFuture(transferStorage.findById(id));
+        } catch (TransferStorageException e) {
+            throw new TransferServiceException("Unable to retrieve transfer record", e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<List<Transfer>> getAll() throws TransferServiceException {
+        try {
+            return completedFuture(transferStorage.findAll());
+        } catch (TransferStorageException e) {
+            throw new TransferServiceException("Unable to retrieve all transfers", e);
+        }
+    }
+
+    @Override
     public CompletableFuture<Transfer> transfer(Transfer transfer) throws TransferServiceException {
         return completedFuture(transferMoney(transfer));
     }
@@ -70,21 +88,4 @@ public class DefaultTransferService implements TransferService {
         }
     }
 
-    @Override
-    public CompletableFuture<Transfer> get(String id) throws TransferServiceException {
-        try {
-            return completedFuture(transferStorage.findById(id));
-        } catch (TransferStorageException e) {
-            throw new TransferServiceException("Unable to retrieve transfer record", e);
-        }
-    }
-
-    @Override
-    public CompletableFuture<List<Transfer>> getAll() throws TransferServiceException {
-        try {
-            return completedFuture(transferStorage.findAll());
-        } catch (TransferStorageException e) {
-            throw new TransferServiceException("Unable to retrieve all transfers", e);
-        }
-    }
 }
