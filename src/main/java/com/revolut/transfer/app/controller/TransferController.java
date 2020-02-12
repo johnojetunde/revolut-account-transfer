@@ -67,7 +67,7 @@ public class TransferController {
 
     public Object post(Request request, Response response) throws BadRequestException {
         try {
-            TransferRequestModel requestModel = new Gson().fromJson(request.body(), TransferRequestModel.class);
+            TransferRequestModel requestModel = gson.fromJson(request.body(), TransferRequestModel.class);
 
             validator.validate(requestModel);
 
