@@ -1,14 +1,9 @@
 package com.revolut.transfer.app.api;
 
-import com.google.gson.Gson;
-import com.revolut.transfer.app.RevolutTransfer;
 import com.revolut.transfer.app.model.AccountRequestModel;
 import com.revolut.transfer.app.model.AccountResponseModel;
 import okhttp3.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import spark.Spark;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,27 +11,8 @@ import java.math.BigDecimal;
 import static com.revolut.transfer.app.fixture.AccountRequestModelFixture.requestModelFixture;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class AccountAPITests {
-    private static String BASE_URL;
-    private static OkHttpClient client;
-    private static Gson gson;
-
-    @BeforeAll
-    public static void startServer() {
-        RevolutTransfer.main("");
-        int PORT = Spark.port();
-        client = new OkHttpClient();
-        BASE_URL = "http://localhost:" + PORT;
-        gson = new Gson();
-
-    }
-
-    @AfterAll
-    public static void stopServer() {
-        Spark.stop();
-    }
+public class AccountTest extends BaseApiTest {
 
     @Test
     void createNewAccountSuccessfully() throws IOException {
@@ -44,11 +20,7 @@ public class AccountAPITests {
         String accountJson = gson.toJson(account);
         Response response = createAccount(accountJson);
 
-        assertAll("assert http params",
-                () -> assertEquals(200, response.code()),
-                () -> assertEquals("application/json", response.header("Content-Type")),
-                () -> assertNotNull(response.body())
-        );
+        assertHttpResponse(response, 200);
     }
 
     @Test
@@ -57,21 +29,7 @@ public class AccountAPITests {
         String accountJson = gson.toJson(account);
         Response response = createAccount(accountJson);
 
-        assertAll("assert http params",
-                () -> assertEquals(400, response.code()),
-                () -> assertEquals("application/json", response.header("Content-Type")),
-                () -> assertNotNull(response.body())
-        );
-    }
-
-    private Response createAccount(String accountJson) throws IOException {
-        Request request = new Request.Builder()
-                .url(BASE_URL + "/accounts")
-                .post(RequestBody.create(MediaType.get("application/json"), accountJson))
-                .build();
-
-        Call call = client.newCall(request);
-        return call.execute();
+        assertHttpResponse(response, 400);
     }
 
     @Test
@@ -80,20 +38,9 @@ public class AccountAPITests {
         Response createResponse = createAccount(accountJson);
 
         AccountResponseModel responseModel = gson.fromJson(createResponse.body().charStream(), AccountResponseModel.class);
+        Response response = getAccountById(responseModel.getId());
 
-        Request request = new Request.Builder()
-                .url(BASE_URL + "/accounts/" + responseModel.getId())
-                .get()
-                .build();
-
-        Call call = client.newCall(request);
-        Response response = call.execute();
-
-        assertAll("assert http params",
-                () -> assertEquals(200, response.code()),
-                () -> assertEquals("application/json", response.header("Content-Type")),
-                () -> assertNotNull(response.body())
-        );
+        assertHttpResponse(response, 200);
     }
 
     @Test
@@ -109,11 +56,7 @@ public class AccountAPITests {
         Call call = client.newCall(request);
         Response response = call.execute();
 
-        assertAll("assert http params",
-                () -> assertEquals(200, response.code()),
-                () -> assertEquals("application/json", response.header("Content-Type")),
-                () -> assertNotNull(response.body())
-        );
+        assertHttpResponse(response, 200);
     }
 
     @Test
@@ -126,11 +69,7 @@ public class AccountAPITests {
         Call call = client.newCall(request);
         Response response = call.execute();
 
-        assertAll("assert http params",
-                () -> assertEquals(500, response.code()),
-                () -> assertEquals("application/json", response.header("Content-Type")),
-                () -> assertNotNull(response.body())
-        );
+        assertHttpResponse(response, 500);
     }
 
     @Test
@@ -153,10 +92,8 @@ public class AccountAPITests {
 
         AccountResponseModel updatedModel = gson.fromJson(response.body().charStream(), AccountResponseModel.class);
 
-        assertAll("assert http params",
-                () -> assertEquals(200, response.code()),
-                () -> assertEquals("application/json", response.header("Content-Type")),
-                () -> assertNotNull(response.body()),
+        assertHttpResponse(response, 200);
+        assertAll("assert response values",
                 () -> assertEquals(500.0, updatedModel.getBalance().doubleValue()),
                 () -> assertEquals("Ginger", updatedModel.getFirstname())
         );
