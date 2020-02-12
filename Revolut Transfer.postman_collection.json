@@ -1,0 +1,238 @@
+{
+  "info": {
+    "_postman_id": "176a774e-2475-422a-b5f3-c4fa06e676b8",
+    "name": "Revolut Transfer",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "create account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"firstname\": \"Philip\",\n\t\"lastname\": \"Awon\",\n\t\"balance\": \"20.23\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4567/accounts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "accounts"
+              ]
+            },
+            "description": "create account"
+          },
+          "response": []
+        },
+        {
+          "name": "update account",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"firstname\": \"Philip\",\n\t\"lastname\": \"Awon\",\n\t\"balance\": \"20.23\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4567/accounts/REV13308696",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "accounts",
+                "REV13308696"
+              ]
+            },
+            "description": "create account"
+          },
+          "response": []
+        },
+        {
+          "name": "get account by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4567/accounts/REV13308696",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "accounts",
+                "REV13308696"
+              ]
+            },
+            "description": "get account by id"
+          },
+          "response": []
+        },
+        {
+          "name": "get all accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4567/accounts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "accounts"
+              ]
+            },
+            "description": "get all accounts"
+          },
+          "response": []
+        }
+      ],
+      "protocolProfileBehavior": {}
+    },
+    {
+      "name": "Transfer",
+      "item": [
+        {
+          "name": "create transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"senderAccountId\":\"REV689537538\",\n  \"receiverAccountId\":\"REV13308696\",\n  \"amount\":1.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4567/transfers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "transfers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get transfer by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4567/transfers/REV689537538",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "transfers",
+                "REV689537538"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all transfers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4567/transfers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4567",
+              "path": [
+                "transfers"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "protocolProfileBehavior": {}
+    }
+  ],
+  "protocolProfileBehavior": {}
+}
