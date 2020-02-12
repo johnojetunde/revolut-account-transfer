@@ -1,8 +1,10 @@
 package com.revolut.transfer.app.controller;
 
 import com.google.gson.Gson;
+import com.revolut.transfer.app.exception.RequestValidationException;
 import com.revolut.transfer.app.exception.ViolationException;
 import com.revolut.transfer.app.exception.api.ApiViolationException;
+import com.revolut.transfer.app.exception.api.BadRequestException;
 import com.revolut.transfer.app.exception.api.InternalServerErrorException;
 import com.revolut.transfer.app.model.TransferRequestModel;
 import com.revolut.transfer.app.model.TransferResponseModel;
@@ -63,11 +65,13 @@ public class TransferController {
         }
     }
 
-    public Object post(Request request, Response response) {
+    public Object post(Request request, Response response) throws BadRequestException {
         try {
             TransferRequestModel requestModel = new Gson().fromJson(request.body(), TransferRequestModel.class);
 
             validator.validate(requestModel);
+
+            ensureDifferentSenderAndReceiverAccount(requestModel);
 
             CompletableFuture<Object> responseBody = transferService.transfer(
                     requestModel.toModel()
@@ -78,6 +82,10 @@ public class TransferController {
             return responseBody.get();
         } catch (ViolationException e) {
             throw new ApiViolationException(e);
+        } catch (RequestValidationException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (TransferServiceException e) {
+            throw new InternalServerErrorException(e.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorException("Unable to complete transfer");
         }
@@ -85,5 +93,11 @@ public class TransferController {
 
     private void setSuccessStatus(CompletableFuture<Object> responseBody, Response response) {
         responseBody.thenAccept(r -> response.status(200));
+    }
+
+    private void ensureDifferentSenderAndReceiverAccount(TransferRequestModel request) throws RequestValidationException {
+        if (request.getReceiverAccountId().equals(request.getSenderAccountId())) {
+            throw new RequestValidationException("Sender and Receiver accounts must not be the same");
+        }
     }
 }

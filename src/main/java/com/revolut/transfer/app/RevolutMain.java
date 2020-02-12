@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.revolut.transfer.app.controller.AccountController;
 import com.revolut.transfer.app.controller.TransferController;
 import com.revolut.transfer.app.exception.api.ApiViolationException;
+import com.revolut.transfer.app.exception.api.BadRequestException;
 import com.revolut.transfer.app.exception.api.InternalServerErrorException;
 import com.revolut.transfer.app.exception.handler.GeneralExceptionHandler;
 import com.revolut.transfer.app.model.AccountRequestModel;
@@ -54,6 +55,7 @@ public class RevolutMain {
         after((request, response) -> response.type("application/json"));
 
         exception(InternalServerErrorException.class, exceptionHandler::generalAccountException);
+        exception(BadRequestException.class, exceptionHandler::badRequestException);
         exception(ApiViolationException.class, exceptionHandler::violationException);
     }
 }
