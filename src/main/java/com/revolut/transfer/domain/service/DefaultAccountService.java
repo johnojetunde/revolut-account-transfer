@@ -22,7 +22,9 @@ public class DefaultAccountService implements AccountService {
     private AccountStorage accountStorage;
 
     @Override
-    public CompletableFuture<Account> create(@NonNull String firstName, @NonNull String lastName, @NonNull BigDecimal balance) throws AccountServiceException {
+    public CompletableFuture<Account> create(@NonNull String firstName,
+                                             @NonNull String lastName,
+                                             @NonNull BigDecimal balance) throws AccountServiceException {
         try {
             Account account = Account.builder()
                     .firstname(firstName)
@@ -56,7 +58,8 @@ public class DefaultAccountService implements AccountService {
     }
 
     @Override
-    public CompletableFuture<Account> update(@NonNull String id, @NonNull Account account) throws AccountServiceException {
+    public CompletableFuture<Account> update(@NonNull String id,
+                                             @NonNull Account account) throws AccountServiceException {
         try {
             Account databaseAccount = get(id).thenApply(s -> {
                 updateFirstname(s, account);

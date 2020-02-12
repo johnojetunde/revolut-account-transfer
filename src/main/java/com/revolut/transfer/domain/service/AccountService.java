@@ -16,9 +16,9 @@ public interface AccountService {
         return create(firstName, lastName, ZERO);
     }
 
-    CompletableFuture<Account> update(String id, Account account) throws AccountServiceException;
-
     CompletableFuture<Account> get(String id) throws AccountServiceException;
 
     CompletableFuture<List<Account>> getAll() throws AccountServiceException;
+
+    CompletableFuture<Account> update(String id, Account account) throws AccountServiceException;
 }

@@ -97,5 +97,4 @@ public class DefaultTransferService implements TransferService {
             accountStorage.update(account);
         }
     }
-
 }

@@ -46,7 +46,6 @@ public class AccountController {
         } catch (Exception e) {
             throw new InternalServerErrorException("Error fetching account details");
         }
-
     }
 
     public Object get(Request request, Response response) {

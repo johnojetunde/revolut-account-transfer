@@ -46,7 +46,6 @@ public class TransferController {
         } catch (Exception e) {
             throw new InternalServerErrorException("Error retrieving all transfers");
         }
-
     }
 
     public Object get(Request request, Response response) {
