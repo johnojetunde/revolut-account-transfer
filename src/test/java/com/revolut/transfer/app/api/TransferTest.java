@@ -56,12 +56,22 @@ public class TransferTest extends BaseApiTest<TransferResponseModel> {
     void transferFailsWithErrors() throws IOException {
         var transferRequestModel = new TransferRequestModel(new BigDecimal("0"), "", "");
 
-        var transferRequestJson = gson.toJson(transferRequestModel);
-        var response = httpPost("/transfers", transferRequestJson);
+        var response = httpPost("/transfers", gson.toJson(transferRequestModel));
         var errors = convertToMap(response);
 
         assertHttpResponse(response, 400);
         assertEquals(3, errors.entrySet().size());
+    }
+
+    @Test
+    void transferFailsWithBadDataError() throws IOException {
+        var transferRequestModel = new TransferRequestModel(new BigDecimal("0"), "REVOLUT", "REVOLUT");
+
+        var response = httpPost("/transfers", gson.toJson(transferRequestModel));
+        var errors = convertToMap(response);
+
+        assertHttpResponse(response, 400);
+        assertEquals(1, errors.entrySet().size());
     }
 
     @Test
