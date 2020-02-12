@@ -6,20 +6,22 @@ import com.revolut.transfer.domain.service.AccountStorage;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+
+import static com.revolut.transfer.domain.util.FunctionUtils.getAllAsList;
+import static java.lang.String.valueOf;
 
 @AllArgsConstructor
 public class ConcurrentHashMapAccountStorage implements AccountStorage {
+    private static final String PREFIX = "REV";
     private final ConcurrentHashMap<String, Account> database;
 
     @Override
     public Account create(Account account) throws AccountStorageException {
         try {
-            String id = String.valueOf(generateId());
+            String id = generateId();
             account.setId(id);
             account.setVersion(new AtomicInteger(0));
 
@@ -42,10 +44,7 @@ public class ConcurrentHashMapAccountStorage implements AccountStorage {
 
     @Override
     public List<Account> findAll() throws AccountStorageException {
-        return database.entrySet()
-                .parallelStream()
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+        return getAllAsList(database);
     }
 
     @Override
@@ -70,8 +69,8 @@ public class ConcurrentHashMapAccountStorage implements AccountStorage {
 
     }
 
-    synchronized int generateId() {
+    synchronized String generateId() {
         Random random = new Random(System.nanoTime());
-        return random.nextInt(1000000000);
+        return PREFIX.concat(valueOf(random.nextInt(1000000000)));
     }
 }

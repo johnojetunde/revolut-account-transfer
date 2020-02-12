@@ -41,7 +41,7 @@ class ConcurrentHashMapAccountStorageTest {
 
         assertNotNull(account);
         assertNotEquals("664664", account.getId());
-        assertEquals(9, account.getId().length());
+        assertTrue(account.getId().contains("REV"));
         assertEquals(0, account.getVersion().getAcquire());
     }
 
