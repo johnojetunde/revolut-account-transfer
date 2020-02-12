@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static com.revolut.transfer.domain.model.AccountFixture.getAccount;
-import static com.revolut.transfer.domain.stubs.AccountStorageStub.accountStorageWithErrors;
-import static com.revolut.transfer.domain.stubs.AccountStorageStub.validAccountStorage;
+import static com.revolut.transfer.domain.stub.AccountStorageStub.accountStorageWithErrors;
+import static com.revolut.transfer.domain.stub.AccountStorageStub.validAccountStorage;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultAccountServiceTest {

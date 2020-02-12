@@ -1,4 +1,4 @@
-package com.revolut.transfer.domain.stubs;
+package com.revolut.transfer.domain.stub;
 
 import com.revolut.transfer.domain.exception.AccountStorageException;
 import com.revolut.transfer.domain.model.Account;
