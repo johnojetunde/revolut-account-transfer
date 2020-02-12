@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.revolut.transfer.domain.util.FunctionUtil.getAllAsList;
+import static java.lang.String.format;
 import static java.lang.String.valueOf;
 
 @AllArgsConstructor
@@ -43,14 +44,18 @@ public class ConcurrentHashMapAccountStorage implements AccountStorage {
     public Account findAccountById(String id) throws AccountStorageException {
         var account = database.get(id);
         if (account == null) {
-            throw new AccountStorageException("Account does not exist");
+            throw new AccountStorageException(format("Account (%s) does not exist", id));
         }
         return account;
     }
 
     @Override
     public List<Account> findAll() throws AccountStorageException {
-        return getAllAsList(database);
+        try {
+            return getAllAsList(database);
+        } catch (Exception e) {
+            throw new AccountStorageException("Unable to retrieve all accounts", e);
+        }
     }
 
     @Override

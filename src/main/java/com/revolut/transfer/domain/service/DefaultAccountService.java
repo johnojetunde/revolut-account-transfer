@@ -41,7 +41,7 @@ public class DefaultAccountService implements AccountService {
         try {
             return completedFuture(accountStorage.findAccountById(id));
         } catch (AccountStorageException e) {
-            throw new AccountServiceException("Account does not exist", e);
+            throw new AccountServiceException(e.getMessage(), e);
         }
     }
 
@@ -50,8 +50,8 @@ public class DefaultAccountService implements AccountService {
         try {
 
             return completedFuture(accountStorage.findAll());
-        } catch (AccountStorageException e) {
-            throw new AccountServiceException("Account does not exist", e);
+        } catch (Exception e) {
+            throw new AccountServiceException("Error retrieving all accounts", e);
         }
     }
 
