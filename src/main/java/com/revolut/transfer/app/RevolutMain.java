@@ -22,7 +22,7 @@ import static com.revolut.transfer.app.factory.ValidatorFactory.getValidator;
 import static java.util.Collections.singletonList;
 import static spark.Spark.*;
 
-public class RevolutTransfer {
+public class RevolutMain {
     public static void main(String... args) {
         final ConcurrentHashMap<String, Account> accountDatabase = new ConcurrentHashMap<>();
         final ConcurrentHashMap<String, Transfer> transferDatabase = new ConcurrentHashMap<>();

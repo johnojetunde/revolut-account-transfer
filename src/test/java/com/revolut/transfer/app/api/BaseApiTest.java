@@ -2,7 +2,7 @@ package com.revolut.transfer.app.api;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.revolut.transfer.app.RevolutTransfer;
+import com.revolut.transfer.app.RevolutMain;
 import com.revolut.transfer.app.model.AccountResponseModel;
 import okhttp3.*;
 import org.junit.jupiter.api.AfterAll;
@@ -24,7 +24,7 @@ public class BaseApiTest<T> {
 
     @BeforeAll
     public static void startServer() {
-        RevolutTransfer.main("");
+        RevolutMain.main("");
         var PORT = Spark.port();
         client = new OkHttpClient();
         BASE_URL = "http://localhost:" + PORT;
