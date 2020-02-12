@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
@@ -46,8 +47,8 @@ public class DefaultTransferService implements TransferService {
 
     private Transfer transferMoney(Transfer transfer) throws TransferServiceException {
         try {
-            Account sender = accountStorage.findAccountById(transfer.getSenderAccountId());
-            Account receiver = accountStorage.findAccountById(transfer.getReceiverAccountId());
+            Account sender = retrieveAccount(transfer.getSenderAccountId());
+            Account receiver = retrieveAccount(transfer.getReceiverAccountId());
 
             Account senderCopy = (Account) sender.clone();
             Account receiverCopy = (Account) receiver.clone();
@@ -65,6 +66,15 @@ public class DefaultTransferService implements TransferService {
             throw new TransferServiceException("Unable to complete transfer", e);
         } catch (TransferValidationException e) {
             throw new TransferServiceException(e.getMessage(), e);
+        }
+    }
+
+    private Account retrieveAccount(String id) throws TransferValidationException {
+        try {
+            return accountStorage.findAccountById(id);
+        } catch (AccountStorageException e) {
+            throw new TransferValidationException(
+                    format("Unable to find account associated with ID (%s)", id), e);
         }
     }
 
