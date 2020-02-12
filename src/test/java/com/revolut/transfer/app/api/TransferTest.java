@@ -1,12 +1,13 @@
 package com.revolut.transfer.app.api;
 
-import com.revolut.transfer.app.model.*;
+import com.revolut.transfer.app.model.AccountRequestModel;
+import com.revolut.transfer.app.model.TransferRequestModel;
+import com.revolut.transfer.app.model.TransferResponseModel;
 import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,8 +27,8 @@ public class TransferTest extends BaseApiTest<TransferResponseModel> {
         var accountJson1 = gson.toJson(account1);
         var accountJson2 = gson.toJson(account2);
 
-        var responseModel1 = (AccountResponseModel) convertToObject(createAccount(accountJson1));
-        var responseModel2 = (AccountResponseModel) convertToObject(createAccount(accountJson2));
+        var responseModel1 = convertToAccountModel(createAccount(accountJson1));
+        var responseModel2 = convertToAccountModel(createAccount(accountJson2));
         var transferRequestModel = new TransferRequestModel(
                 new BigDecimal("20.2"),
                 responseModel1.getId(),
@@ -37,10 +38,10 @@ public class TransferTest extends BaseApiTest<TransferResponseModel> {
         var transferRequestJson = gson.toJson(transferRequestModel);
         var response = httpPost("/transfers", transferRequestJson);
 
-        var responseModel1AfterTransfer = (AccountResponseModel) convertToObject(
+        var responseModel1AfterTransfer = convertToAccountModel(
                 httpGet("/accounts/" + responseModel1.getId())
         );
-        var responseModel2AfterTransfer = (AccountResponseModel) convertToObject(
+        var responseModel2AfterTransfer = convertToAccountModel(
                 httpGet("/accounts/" + responseModel2.getId())
         );
 
@@ -57,7 +58,7 @@ public class TransferTest extends BaseApiTest<TransferResponseModel> {
 
         var transferRequestJson = gson.toJson(transferRequestModel);
         var response = httpPost("/transfers", transferRequestJson);
-        var errors = (Map) convertToObject(response);
+        var errors = convertToMap(response);
 
         assertHttpResponse(response, 400);
         assertEquals(3, errors.entrySet().size());
@@ -66,10 +67,10 @@ public class TransferTest extends BaseApiTest<TransferResponseModel> {
     @Test
     void getTransferById() throws IOException {
         var transferResponse = transferMoney();
-        var responseModel = convertToModel(transferResponse);
+        var responseModel = convertToTransferModel(transferResponse);
 
         var response = httpGet("/transfers/" + responseModel.getId());
-        var responseFromGet = convertToModel(response);
+        var responseFromGet = convertToTransferModel(response);
 
         assertHttpResponse(response, 200);
         assertEquals(responseModel.getId(), responseFromGet.getId());
@@ -89,6 +90,10 @@ public class TransferTest extends BaseApiTest<TransferResponseModel> {
         transferMoney();
 
         assertListOfObject(httpGet("/transfers"));
+    }
+
+    private TransferResponseModel convertToTransferModel(Response response) {
+        return gson.fromJson(response.body().charStream(), TransferResponseModel.class);
     }
 
     private AccountRequestModel createRequest(String firstname, Double balance) {

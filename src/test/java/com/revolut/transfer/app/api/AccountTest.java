@@ -35,7 +35,7 @@ public class AccountTest extends BaseApiTest<AccountResponseModel> {
         var accountJson = gson.toJson(requestModelFixture(true));
         var accountCreationResponse = createAccount(accountJson);
 
-        var responseModel = convertToModel(accountCreationResponse);
+        var responseModel = convertToAccountModel(accountCreationResponse);
         var response = httpGet("/accounts/" + responseModel.getId());
 
         assertHttpResponse(response, 200);
@@ -63,12 +63,12 @@ public class AccountTest extends BaseApiTest<AccountResponseModel> {
         var requestModel = requestModelFixture(true);
         var accountJson = gson.toJson(requestModel);
         var accountCreationResponse = createAccount(accountJson);
-        var responseModel = convertToModel(accountCreationResponse);
+        var responseModel = convertToAccountModel(accountCreationResponse);
         requestModel.setBalance(new BigDecimal("500.0"));
         requestModel.setFirstname("Ginger");
 
         var response = httpPatch("/accounts/" + responseModel.getId(), gson.toJson(requestModel));
-        var updatedModel = convertToModel(response);
+        var updatedModel = convertToAccountModel(response);
 
         assertHttpResponse(response, 200);
 

@@ -3,14 +3,17 @@ package com.revolut.transfer.app.api;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.revolut.transfer.app.RevolutTransfer;
+import com.revolut.transfer.app.model.AccountResponseModel;
 import okhttp3.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import spark.Spark;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,7 +81,7 @@ public class BaseApiTest<T> {
     }
 
     void assertListOfObject(Response response) {
-        var type = new TypeToken<ArrayList<T>>() {}.getType();
+        Type type = new TypeToken<ArrayList<T>>() {}.getType();
 
         List<T> responseObjects = gson.fromJson(response.body().charStream(), type);
 
@@ -86,11 +89,11 @@ public class BaseApiTest<T> {
         assertFalse(responseObjects.isEmpty());
     }
 
-    T convertToModel(Response response) {
-        return (T) convertToObject(response);
+    AccountResponseModel convertToAccountModel(Response response) {
+        return gson.fromJson(response.body().charStream(), AccountResponseModel.class);
     }
 
-    Object convertToObject(Response response) {
-        return gson.fromJson(response.body().charStream(), Object.class);
+    Map convertToMap(Response response) {
+        return gson.fromJson(response.body().charStream(), Map.class);
     }
 }
