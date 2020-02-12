@@ -16,7 +16,7 @@ public class AccountResponseModel {
     private String lastname;
 
     public static AccountResponseModel fromAccount(Account account) {
-        return new AccountResponseModelBuilder()
+        return AccountResponseModel.builder()
                 .id(account.getId())
                 .version(account.getVersion().getAcquire())
                 .balance(account.getBalance().getAcquire())
