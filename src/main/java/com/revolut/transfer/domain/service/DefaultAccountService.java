@@ -75,15 +75,15 @@ public class DefaultAccountService implements AccountService {
     }
 
     private void updateFirstname(Account currentAccount, Account updates) {
-        if (!isNullOrEmpty(currentAccount.getFirstname())
-                && !updates.getFirstname().equals(currentAccount.getFirstname())) {
+        if (!isNullOrEmpty(updates.getFirstname())
+                && !currentAccount.getFirstname().equals(updates.getFirstname())) {
             currentAccount.setFirstname(updates.getFirstname());
         }
     }
 
     private void updateLastname(Account currentAccount, Account updates) {
-        if (!isNullOrEmpty(currentAccount.getLastname())
-                && !updates.getLastname().equals(currentAccount.getLastname())) {
+        if (!isNullOrEmpty(updates.getLastname())
+                && !currentAccount.getLastname().equals(updates.getLastname())) {
             currentAccount.setLastname(updates.getLastname());
         }
     }
