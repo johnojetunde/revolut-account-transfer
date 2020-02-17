@@ -24,7 +24,6 @@ public class GeneralExceptionHandler {
 
     public void badRequestException(BadRequestException exception, Request request, Response response) {
         log.info("handling error with status 400", exception);
-
         responseAttributes(response, 400, exception.getMessage());
     }
 
